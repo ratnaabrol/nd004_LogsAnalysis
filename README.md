@@ -9,62 +9,62 @@ __Description__: List of articles, each identified by a unique id. Each row cont
 
 __Columns__:
 * __id__:
- * unique id for the article.
- * integer, primary key, required.
- * backed by sequence `articles_id_seq`.
+    * unique id for the article.
+    * integer, primary key, required.
+    * backed by sequence `articles_id_seq`.
 * __author__:
- * id of the author that wrote this article.
- * integer, foreign key, required.
+    * id of the author that wrote this article.
+    * integer, foreign key, required.
 * __title__:
-  * the article's title.
-  * text, required.
+     * the article's title.
+     * text, required.
 * __slug__:
-  * the article's short name.
-  * text, required.
-* *__time__*:
- * the date/time that the article was added.
- * timestamp, optional, defaults to database insert time.
+     * the article's short name.
+     * text, required.
+*    *__time__*:
+    * the date/time that the article was added.
+    * timestamp, optional, defaults to database insert time.
 * _body_:
-  * the full article text.
-  * text, optional.
+     * the full article text.
+     * text, optional.
 * _lead_:
- * the article's lead summary encapsulating the article's main ideas in order to capture the reader's attention.
- * text, optional.
+    * the article's lead summary encapsulating the article's main ideas in order to capture the reader's attention.
+    * text, optional.
 
 ### `authors` table
 __Description__: List of authors of articles, along with author metadata (bio).
 
 __Columns__:
 * __id__:
- * unique id for the author.
- * integer, primary key, required.
- * backed by sequence `authors_id_seq`.
+    * unique id for the author.
+    * integer, primary key, required.
+    * backed by sequence `authors_id_seq`.
 * __name__:
- * the author's full name.
- * text, required.
+    * the author's full name.
+    * text, required.
 * _bio_:
- * short biography of the author
- * text, optional.
+    * short biography of the author
+    * text, optional.
 
 ### `log` table
 __Description__: Article access log, detailing (among other metadata) accessor IP address, resource accessed and date/time of access.
 
 __Columns__:
 * __id__
- * unique id for the log entry.
- * integer, primary key.
- * backed by sequence `log_id_seq`.
-* *__time__*
- * the date/time that the log entry was generated.
- * timestamp, optional, defaults to database insert time.
+    * unique id for the log entry.
+    * integer, primary key.
+    * backed by sequence `log_id_seq`.
+*    *__time__*
+    * the date/time that the log entry was generated.
+    * timestamp, optional, defaults to database insert time.
 * _path_
- * URL path to resource accessed.
- * text, optional.
+    * URL path to resource accessed.
+    * text, optional.
 * _ip_
- * IP address exposed by the computer accessing the resource.
- * IP address, optional.
+    * IP address exposed by the computer accessing the resource.
+    * IP address, optional.
 * _method_
- * The HTTP method used to access the resource. E.g. 'GET', 'POST'.
- * text, optional.
+    * The HTTP method used to access the resource. E.g. 'GET', 'POST'.
+    * text, optional.
 * _status_
- * The HTTP status code and code description response from the server for the access request. E.g. '200 OK'.
+    * The HTTP status code and code description response from the server for the access request. E.g. '200 OK'.

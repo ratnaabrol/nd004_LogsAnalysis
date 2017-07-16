@@ -19,7 +19,7 @@ __Columns__:
      * the article's title.
      * text, required.
 * __slug__:
-     * the article's short name.
+     * the article's short name. Used to reference article as a resource in URL (e.g. `/article/<slug>`).
      * text, required.
 *    *__time__*:
     * the date/time that the article was added.

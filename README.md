@@ -54,7 +54,7 @@ __Columns__:
     * unique id for the log entry.
     * integer, primary key.
     * backed by sequence `log_id_seq`.
-*    *__time__*
+* *__time__*
     * the date/time that the log entry was generated.
     * timestamp, optional, defaults to database insert time.
 * _path_

@@ -2,3 +2,6 @@ init/newsdata.sql
 **/*.egg-info
 **/*.egg
 **/__pycache__
+build/
+dist/
+.coverage

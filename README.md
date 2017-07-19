@@ -1,4 +1,64 @@
 # Udacity Project - Log Analysis
+
+Note: the instructions below use commands ```python``` and ```pip```. Please replace these as appropriate depending on your python installation (e.g. ```python3``` or ```pip3```).
+
+## Prerequisites
+Note: The version requirements below are so strict because this project was built with specific versions of tools and libraries and has only been tested with those versions.
+
+### Global Prerequisites
+* python (v3.6.1)
+
+### Distribution Prerequisites
+* wheel (v0.29.0): ```pip install wheel==0.29.0```
+
+### Usage Prerequisites
+(these dependencies will be installed when installing the distribution wheel)
+* psycopg2 (v2.7.1): ```pip install psycopg2==2.7.1```
+
+### Testing Prerequisites
+* coverage (v4.4.1): ```pip install coverage==4.4.1```
+
+## Distribution
+To create distributable wheel, in the project root:
+```
+$> python setup.py bdist_wheel
+```
+This will create a ```dist``` directory and a wheel archive within it.
+
+## Installation
+To install the wheel:
+```
+$> pip install <wheel_file>
+```
+where ```<wheel_file>``` is the distribution wheel (see above).
+
+## Testing
+To run tests, in the project root directory:
+```
+$> python setup.py test
+```
+
+To produce code coverage report, add the movie_project packge to your python library path, and from the project root directory:
+__TODO__: UPDATE WITH LATEST OUTPUT
+```
+$> coverage run -m unittest discover -s "test" -p "*_test.py"
+[('Ursula La Multa', 507594), ('Rudolf von Treppenwitz', 423457), ('Anonymous Contributor', 170098), ('Markoff Chaney', 84557)]
+.
+----------------------------------------------------------------------
+Ran 1 test in 1.246s
+
+OK
+$> coverage report --omit=/usr/*
+Name                                   Stmts   Miss  Cover
+----------------------------------------------------------
+src/logs_analysis/__init__.py              2      0   100%
+src/logs_analysis/db_report.py            17      1    94%
+test/logs_analysis/__init__.py             2      0   100%
+test/logs_analysis/db_report_test.py       8      0   100%
+----------------------------------------------------------
+TOTAL                                     29      1    97%
+```
+
 ## Database design
 The information below was derived from inspecting the database provided as the project starting point (`newsdata.sql`).
 

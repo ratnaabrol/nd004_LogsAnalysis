@@ -1,0 +1,3 @@
+[MASTER]
+# add src and test directories to the PYTHONPATH for pylint
+init-hook='import sys; sys.path.extend(["src", "test"])'

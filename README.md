@@ -38,7 +38,7 @@ To run tests, in the project root directory:
 $> python setup.py test
 ```
 
-To produce code coverage report, add the movie_project packge to your python library path, and from the project root directory:
+To produce code coverage report, add the logs_analysis packge to your python library path, and from the project root directory:
 __TODO__: UPDATE WITH LATEST OUTPUT
 ```
 $> coverage run -m unittest discover -s "test" -p "*_test.py"

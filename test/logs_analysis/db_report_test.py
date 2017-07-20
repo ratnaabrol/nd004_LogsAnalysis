@@ -17,7 +17,7 @@ class DbReportTest(unittest.TestCase):
     # Set up and tear down methods.
     #
     @classmethod
-    def xtearDownClass(cls):
+    def tearDownClass(cls):
         """Reset database once all tests have run."""
         helper = \
             db_report_test_helper.DbReportTestHelper(cls._TEST_DB)

@@ -1,5 +1,7 @@
-from setuptools import setup, find_packages
+"""Project build script. This uses setuptools to drive the build."""
+
 import unittest
+from setuptools import setup, find_packages
 
 # configure test discovery
 TEST_DIR = "test"
@@ -13,13 +15,13 @@ def test_suite():
     return suite
 
 setup(
-    name = "logs_analysis",
-    version = "0.0.1",
+    name="logs_analysis",
+    version="0.0.1",
     namespace_packages=["logs_analysis"],
-    packages = find_packages("src"),
+    packages=find_packages("src"),
     package_dir={"":"src"},
 
     install_requires=["psycopg2==2.7.1"],
 
-    test_suite = "setup.test_suite"
+    test_suite="setup.test_suite"
 )

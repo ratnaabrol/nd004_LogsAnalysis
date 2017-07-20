@@ -10,11 +10,23 @@ class DbReportTest(unittest.TestCase):
 
     _TEST_DB = "news_test"
 
+    @classmethod
+    def tearDownClass(cls):
+        """Reset database once all tests have run."""
+        helper = \
+            db_report_test_helper.DbReportTestHelper(cls._TEST_DB)
+        helper.reset_database()
+
+    def setUp(self):
+        """Reset the database before each test is run"""
+        helper = \
+            db_report_test_helper.DbReportTestHelper(DbReportTest._TEST_DB)
+        helper.reset_database()
+
     def test_can_get_most_popular_authors(self):
         # add test data
         helper = \
             db_report_test_helper.DbReportTestHelper(DbReportTest._TEST_DB)
-        helper.reset_database()
         helper.add_author("first author")
         helper.add_author("second author")
         helper.add_article("first author", "title", "slug1")
@@ -36,7 +48,6 @@ class DbReportTest(unittest.TestCase):
         # add test data
         helper = \
             db_report_test_helper.DbReportTestHelper(DbReportTest._TEST_DB)
-        helper.reset_database()
         helper.add_author("first author")
         helper.add_author("second author")
         helper.add_article("first author", "title", "slug1")
@@ -53,11 +64,10 @@ class DbReportTest(unittest.TestCase):
         self.assertTupleEqual(("first author", 4), authors[0])
         self.assertTupleEqual(("second author", 0), authors[1])
 
-    def test_can_limit_most_popular_authors_list_length(self):
+    def test_can_limit_length_of_most_popular_authors_list(self):
         # add test data
         helper = \
             db_report_test_helper.DbReportTestHelper(DbReportTest._TEST_DB)
-        helper.reset_database()
         helper.add_author("first author")
         helper.add_author("second author")
         helper.add_author("third author")

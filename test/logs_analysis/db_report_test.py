@@ -3,6 +3,7 @@ the test database has been created and db structure created before these
 tests are run."""
 
 import unittest
+import datetime as dt
 
 import logs_analysis.db_report as db_report
 import logs_analysis.db_report_test_helper as db_report_test_helper
@@ -16,7 +17,7 @@ class DbReportTest(unittest.TestCase):
     # Set up and tear down methods.
     #
     @classmethod
-    def tearDownClass(cls):
+    def xtearDownClass(cls):
         """Reset database once all tests have run."""
         helper = \
             db_report_test_helper.DbReportTestHelper(cls._TEST_DB)
@@ -179,3 +180,129 @@ class DbReportTest(unittest.TestCase):
         self.assertTupleEqual(("title one", 4), articles[0])
         self.assertTupleEqual(("title three", 2), articles[1])
         self.assertTupleEqual(("title two", 1), articles[2])
+
+
+    #
+    # Percent response errors tests
+    #
+    def test_can_get_list_of_dates_with_more_than_Npct_errors(self):
+        # add test data
+        helper = \
+            db_report_test_helper.DbReportTestHelper(DbReportTest._TEST_DB)
+
+        # 20% errors on 31st March 2020
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 31))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 31))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 3, 31))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 31))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 31))
+
+        # 33.3% errors on 1st April 2020
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 1))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 1))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 1))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 1))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 1))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 1))
+
+        # 50% errors on 2nd April 2020
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 2))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 2))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 2))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 2))
+
+        # 75% errors on 3nd April 2020
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 3))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 3))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 3))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 3))
+
+
+        # run the test
+        report = db_report.DbReport(DbReportTest._TEST_DB)
+
+        # more than 19%
+        pct_errors = report.get_dates_wth_more_pct_errors(19)
+        self.assertIsNotNone(pct_errors)
+        self.assertEqual(4, len(pct_errors))
+
+        # more than 33%
+        pct_errors = report.get_dates_wth_more_pct_errors(33)
+        self.assertIsNotNone(pct_errors)
+        self.assertEqual(3, len(pct_errors))
+
+        # more than 49%
+        pct_errors = report.get_dates_wth_more_pct_errors(49)
+        self.assertIsNotNone(pct_errors)
+        self.assertEqual(2, len(pct_errors))
+
+        # more than 74%
+        pct_errors = report.get_dates_wth_more_pct_errors(74)
+        self.assertIsNotNone(pct_errors)
+        self.assertEqual(1, len(pct_errors))
+
+        # more than 76%
+        pct_errors = report.get_dates_wth_more_pct_errors(76)
+        self.assertIsNotNone(pct_errors)
+        self.assertEqual(0, len(pct_errors))
+
+    def test_can_get_list_of_dates_when_a_date_has_no_errors(self):
+        # add test data
+        helper = \
+            db_report_test_helper.DbReportTestHelper(DbReportTest._TEST_DB)
+
+        # 0% errors on 21st March 2020
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 21))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 21))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 21))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 3, 21))
+
+        # run the test
+        report = db_report.DbReport(DbReportTest._TEST_DB)
+        pct_errors = report.get_dates_wth_more_pct_errors(0)
+        self.assertIsNotNone(pct_errors)
+        self.assertEqual(0, len(pct_errors))
+
+    def test_can_get_list_of_dates_when_a_date_has_only_errors(self):
+        # add test data
+        helper = \
+            db_report_test_helper.DbReportTestHelper(DbReportTest._TEST_DB)
+
+        # 100% errors on 21st March 2020
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 3, 21))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 3, 21))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 3, 21))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 3, 21))
+
+        # run the test
+        report = db_report.DbReport(DbReportTest._TEST_DB)
+        pct_errors = report.get_dates_wth_more_pct_errors(99)
+        self.assertIsNotNone(pct_errors)
+        self.assertEqual(1, len(pct_errors))

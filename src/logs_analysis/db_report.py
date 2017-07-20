@@ -19,6 +19,17 @@ class DbReport:
       group by aae.article, articles.title
       order by access_count desc"""
 
+    _DATES_WITH_PCT_ERRORS_SQL = """
+    select * from (
+      select ok_rollup.date,
+             coalesce(ok_count,0) as ok_count,
+             coalesce(nok_count, 0) as nok_count,
+             100 * nok_count::float/(coalesce(ok_count,0) + coalesce(nok_count,0)) as bad_pct
+        from (select count(*) as ok_count, date from access_ok group by date) as ok_rollup
+        right join (select count(*) as nok_count, date from access_not_ok group by date) as nok_rollup
+        on ok_rollup.date = nok_rollup.date) as wrapping_table
+      where bad_pct > %(bad_pct)s"""
+
     _LIMIT_SQL = " limit %(top_n)s"
 
     def __init__(self, dbname):
@@ -71,8 +82,32 @@ class DbReport:
                 sql = DbReport._POPULAR_ARTICLES_SQL
                 if top_n is not None:
                     sql += DbReport._LIMIT_SQL
-                cursor.execute(sql, {"top_n":top_n})
+                cursor.execute(sql, {"top_n": top_n})
                 articles = cursor.fetchall()
 
         news_db.close()
         return articles
+
+    def get_dates_wth_more_pct_errors(self, pct_errors):
+        """Report the dates which have more than the supplied percent of
+        response errors.
+
+        Returns a list of tuples in order of most error prone. The tuples
+        in the list contain date, number of ok requests, number of not ok
+        requests and percentage of bad requests.
+
+        Keyword arguments:
+        pct_errors -- the percentage that is our lower bound (exclusive).
+                      Required.
+        """
+
+        dates = []
+
+        with psycopg2.connect(dbname=self._dbname) as news_db:
+            with news_db.cursor() as cursor:
+                sql = DbReport._DATES_WITH_PCT_ERRORS_SQL
+                cursor.execute(sql, {"bad_pct": pct_errors})
+                dates = cursor.fetchall()
+
+        news_db.close()
+        return dates

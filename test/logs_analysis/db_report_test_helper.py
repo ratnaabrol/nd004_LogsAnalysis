@@ -58,7 +58,7 @@ class DbReportTestHelper:
                                where name = %s""", (title, slug, author))
         test_db.close()
 
-    def add_log(self, path, method="GET", status="200 OK"):
+    def add_log(self, path, method="GET", status="200 OK", timestamp=None):
         """Add a access log entry into the database.
 
         Keyword arguments:
@@ -67,9 +67,13 @@ class DbReportTestHelper:
                   Optional. Defaults to GET
         status -- the reponse status of executing the request.
                   Optional. Defaults to "200 OK".
+        timestamp -- the date/time the URL was accessed.
+                     Optional. Defaults to time of insertion of row into db.
         """
         with psycopg2.connect(dbname=self._dbname) as test_db:
             with test_db.cursor() as cursor:
-                cursor.execute("""INSERT INTO log (path, method, status)
-                               VALUES (%s, %s, %s)""", (path, method, status))
+                cursor.execute(
+                    """INSERT INTO log (path, method, status, time)
+                    VALUES (%s, %s, %s, %s)""",
+                    (path, method, status, timestamp))
         test_db.close()

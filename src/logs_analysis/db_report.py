@@ -6,9 +6,10 @@ class DbReport:
     """Reports on a database."""
 
     _POPULAR_AUTHORS_SQL = """
-    select author_name, count(*) as article_count
-      from accessed_articles_ext
-      group by author_name
+    select authors.name as author_name, count(aae.derived_slug) as article_count
+      from accessed_articles_ext as aae
+      right join authors on aae.author = authors.id
+      group by authors.name
       order by article_count desc"""
 
     _LIMIT_SQL = " limit %(top_n)s"
@@ -17,7 +18,7 @@ class DbReport:
         """Constructor.
 
          Keyword arguments:
-         dbname -- name of the psql database to connect to. Must be provided by the caller.
+         dbname -- name of the psql database to connect to. Required.
          """
         self._dbname = dbname
 
@@ -39,7 +40,7 @@ class DbReport:
                 sql = DbReport._POPULAR_AUTHORS_SQL
                 if top_n is not None:
                     sql += DbReport._LIMIT_SQL
-                cursor.execute(sql, (top_n))
+                cursor.execute(sql, {"top_n":top_n})
                 authors = cursor.fetchall()
 
         news_db.close()

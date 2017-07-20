@@ -6,10 +6,9 @@ create view accessed_articles as
 
 -- view of all articles shown as accessed in the log augmented by article and author information
 create view accessed_articles_ext as
-  select aa.*, articles.title as title, authors.name as author_name
-    from accessed_articles as aa, articles, authors
-    where aa.derived_slug = articles.slug
-      and articles.author = authors.id;
+  select aa.*, articles.title as title, articles.author as author
+    from accessed_articles as aa, articles
+    where aa.derived_slug = articles.slug;
 
 -- view of all the accesses that were ok
 create view access_not_ok as

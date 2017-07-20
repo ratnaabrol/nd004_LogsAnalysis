@@ -46,7 +46,8 @@ class DbReportTestHelper:
         """Add an article to the database.
 
         Keyword arguments:
-        author -- the name of the author. Required.
+        author -- the name of the author. Required. Assumed to be an author
+                  that already exists in the database.
         title -- the article title. Required.
         slug -- the article slug. Required.
         """

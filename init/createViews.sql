@@ -6,7 +6,7 @@ create view accessed_articles as
 
 -- view of all articles shown as accessed in the log augmented by article and author information
 create view accessed_articles_ext as
-  select aa.*, articles.title as title, articles.author as author
+  select aa.*, articles.id as article, articles.author as author
     from accessed_articles as aa, articles
     where aa.derived_slug = articles.slug;
 

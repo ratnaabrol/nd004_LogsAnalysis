@@ -21,14 +21,12 @@ class DbReport:
 
     _DATES_WITH_PCT_ERRORS_SQL = """
     select * from (
-      select ok_rollup.date,
-             coalesce(ok_count,0) as ok_count,
-             coalesce(nok_count, 0) as nok_count,
-             100 * nok_count::float/(coalesce(ok_count,0) + coalesce(nok_count,0)) as bad_pct
-        from (select count(*) as ok_count, date from access_ok group by date) as ok_rollup
-        right join (select count(*) as nok_count, date from access_not_ok group by date) as nok_rollup
-        on ok_rollup.date = nok_rollup.date) as wrapping_table
-      where bad_pct > %(bad_pct)s"""
+      select date,
+             100 * count(case when status_nok = true then 1 else NULL end)::float/count(*) as nok_pct,
+             count (*) as count_all
+          from log_ext group by date) as nok_table
+      where nok_pct > %(nok_pct)s
+      order by nok_pct desc"""
 
     _LIMIT_SQL = " limit %(top_n)s"
 
@@ -106,7 +104,7 @@ class DbReport:
         with psycopg2.connect(dbname=self._dbname) as news_db:
             with news_db.cursor() as cursor:
                 sql = DbReport._DATES_WITH_PCT_ERRORS_SQL
-                cursor.execute(sql, {"bad_pct": pct_errors})
+                cursor.execute(sql, {"nok_pct": pct_errors})
                 dates = cursor.fetchall()
 
         news_db.close()

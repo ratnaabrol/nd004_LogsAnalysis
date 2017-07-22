@@ -13,6 +13,8 @@ class DbReportTest(unittest.TestCase):
 
     _TEST_DB = "news_test"
 
+    _TZ_00 = dt.timezone(dt.timedelta(hours=0))
+
     #
     # Set up and tear down methods.
     #
@@ -192,49 +194,80 @@ class DbReportTest(unittest.TestCase):
 
         # 20% errors on 31st March 2020
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 31))
+                       timestamp=dt.datetime(2020, 3, 31,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 31))
+                       timestamp=dt.datetime(2020, 3, 31,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 3, 31))
+                       timestamp=dt.datetime(2020, 3, 31,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 31))
+                       timestamp=dt.datetime(2020, 3, 31,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 31))
+                       timestamp=dt.datetime(2020, 3, 31,
+                                             tzinfo=DbReportTest._TZ_00))
 
-        # 33.3% errors on 1st April 2020
+        # 30% errors on 1st April 2020
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 1))
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 1))
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 1))
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 1))
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 1))
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 1))
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
+        helper.add_log("/article/slug1", status="500 Server Error",
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
+        helper.add_log("/article/slug1",
+                       timestamp=dt.datetime(2020, 4, 1,
+                                             tzinfo=DbReportTest._TZ_00))
 
         # 50% errors on 2nd April 2020
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 2))
+                       timestamp=dt.datetime(2020, 4, 2,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 2))
+                       timestamp=dt.datetime(2020, 4, 2,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 2))
+                       timestamp=dt.datetime(2020, 4, 2,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 2))
+                       timestamp=dt.datetime(2020, 4, 2,
+                                             tzinfo=DbReportTest._TZ_00))
 
         # 75% errors on 3nd April 2020
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 3))
+                       timestamp=dt.datetime(2020, 4, 3,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 3))
+                       timestamp=dt.datetime(2020, 4, 3,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 3))
+                       timestamp=dt.datetime(2020, 4, 3,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 3))
+                       timestamp=dt.datetime(2020, 4, 3,
+                                             tzinfo=DbReportTest._TZ_00))
 
 
         # run the test
@@ -244,21 +277,51 @@ class DbReportTest(unittest.TestCase):
         pct_errors = report.get_dates_wth_more_pct_errors(19)
         self.assertIsNotNone(pct_errors)
         self.assertEqual(4, len(pct_errors))
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 3, tzinfo=DbReportTest._TZ_00), 75.0, 4),
+            pct_errors[0])
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 4),
+            pct_errors[1])
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 1, tzinfo=DbReportTest._TZ_00), 30.0, 10),
+            pct_errors[2])
+        self.assertTupleEqual(
+            (dt.datetime(2020, 3, 31, tzinfo=DbReportTest._TZ_00), 20.0, 5),
+            pct_errors[3])
 
-        # more than 33%
-        pct_errors = report.get_dates_wth_more_pct_errors(33)
+        # more than 30%
+        pct_errors = report.get_dates_wth_more_pct_errors(29)
         self.assertIsNotNone(pct_errors)
         self.assertEqual(3, len(pct_errors))
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 3, tzinfo=DbReportTest._TZ_00), 75.0, 4),
+            pct_errors[0])
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 4),
+            pct_errors[1])
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 1, tzinfo=DbReportTest._TZ_00), 30.0, 10),
+            pct_errors[2])
 
         # more than 49%
         pct_errors = report.get_dates_wth_more_pct_errors(49)
         self.assertIsNotNone(pct_errors)
         self.assertEqual(2, len(pct_errors))
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 3, tzinfo=DbReportTest._TZ_00), 75.0, 4),
+            pct_errors[0])
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 4),
+            pct_errors[1])
 
         # more than 74%
         pct_errors = report.get_dates_wth_more_pct_errors(74)
         self.assertIsNotNone(pct_errors)
         self.assertEqual(1, len(pct_errors))
+        self.assertTupleEqual(
+            (dt.datetime(2020, 4, 3, tzinfo=DbReportTest._TZ_00), 75.0, 4),
+            pct_errors[0])
 
         # more than 76%
         pct_errors = report.get_dates_wth_more_pct_errors(76)
@@ -272,13 +335,17 @@ class DbReportTest(unittest.TestCase):
 
         # 0% errors on 21st March 2020
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
 
         # run the test
         report = db_report.DbReport(DbReportTest._TEST_DB)
@@ -293,16 +360,23 @@ class DbReportTest(unittest.TestCase):
 
         # 100% errors on 21st March 2020
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
         helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 3, 21))
+                       timestamp=dt.datetime(2020, 3, 21,
+                                             tzinfo=DbReportTest._TZ_00))
 
         # run the test
         report = db_report.DbReport(DbReportTest._TEST_DB)
         pct_errors = report.get_dates_wth_more_pct_errors(99)
         self.assertIsNotNone(pct_errors)
         self.assertEqual(1, len(pct_errors))
+        self.assertTupleEqual(
+            (dt.datetime(2020, 3, 21, tzinfo=DbReportTest._TZ_00), 100.0, 4),
+            pct_errors[0])

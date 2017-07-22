@@ -10,10 +10,5 @@ create view accessed_articles_ext as
     from accessed_articles as aa, articles
     where aa.derived_slug = articles.slug;
 
--- view of all the accesses that were ok
-create view access_not_ok as
-  select *, date_trunc('day', time) as date from log where status != '200 OK';
-
--- view of all the accesses that were not ok
-create view access_ok as
-  select *, date_trunc('day', time) as date from log where status = '200 OK';
+create view log_ext as
+  select *, date_trunc('day', time) as date, status = '200 OK' as status_ok, status != '200 OK' as status_nok from log;

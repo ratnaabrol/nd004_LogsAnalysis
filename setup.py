@@ -14,12 +14,13 @@ def test_suite():
     suite = loader.discover(TEST_DIR, TEST_PATTERN)
     return suite
 
+
 setup(
     name="logs_analysis",
     version="0.0.1",
     namespace_packages=["logs_analysis"],
     packages=find_packages("src"),
-    package_dir={"":"src"},
+    package_dir={"": "src"},
 
     install_requires=["psycopg2==2.7.1"],
 

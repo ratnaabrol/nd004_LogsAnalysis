@@ -8,6 +8,12 @@ import datetime as dt
 import logs_analysis.db_report as db_report
 import logs_analysis.db_report_test_helper as db_report_test_helper
 
+# tests are allowed to have long descriptive function names and don't need
+# doc comments, so disable pylint warnings
+# pylint: disable-msg=C0103
+# pylint: disable-msg=C0111
+
+
 class DbReportTest(unittest.TestCase):
     """Test cases"""
 
@@ -183,7 +189,6 @@ class DbReportTest(unittest.TestCase):
         self.assertTupleEqual(("title three", 2), articles[1])
         self.assertTupleEqual(("title two", 1), articles[2])
 
-
     #
     # Percent response errors tests
     #
@@ -248,12 +253,6 @@ class DbReportTest(unittest.TestCase):
         helper.add_log("/article/slug1",
                        timestamp=dt.datetime(2020, 4, 2,
                                              tzinfo=DbReportTest._TZ_00))
-        helper.add_log("/article/slug1", status="500 Server Error",
-                       timestamp=dt.datetime(2020, 4, 2,
-                                             tzinfo=DbReportTest._TZ_00))
-        helper.add_log("/article/slug1",
-                       timestamp=dt.datetime(2020, 4, 2,
-                                             tzinfo=DbReportTest._TZ_00))
 
         # 75% errors on 3nd April 2020
         helper.add_log("/article/slug1", status="500 Server Error",
@@ -269,7 +268,6 @@ class DbReportTest(unittest.TestCase):
                        timestamp=dt.datetime(2020, 4, 3,
                                              tzinfo=DbReportTest._TZ_00))
 
-
         # run the test
         report = db_report.DbReport(DbReportTest._TEST_DB)
 
@@ -281,7 +279,7 @@ class DbReportTest(unittest.TestCase):
             (dt.datetime(2020, 4, 3, tzinfo=DbReportTest._TZ_00), 75.0, 4),
             pct_errors[0])
         self.assertTupleEqual(
-            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 4),
+            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 2),
             pct_errors[1])
         self.assertTupleEqual(
             (dt.datetime(2020, 4, 1, tzinfo=DbReportTest._TZ_00), 30.0, 10),
@@ -298,7 +296,7 @@ class DbReportTest(unittest.TestCase):
             (dt.datetime(2020, 4, 3, tzinfo=DbReportTest._TZ_00), 75.0, 4),
             pct_errors[0])
         self.assertTupleEqual(
-            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 4),
+            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 2),
             pct_errors[1])
         self.assertTupleEqual(
             (dt.datetime(2020, 4, 1, tzinfo=DbReportTest._TZ_00), 30.0, 10),
@@ -312,7 +310,7 @@ class DbReportTest(unittest.TestCase):
             (dt.datetime(2020, 4, 3, tzinfo=DbReportTest._TZ_00), 75.0, 4),
             pct_errors[0])
         self.assertTupleEqual(
-            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 4),
+            (dt.datetime(2020, 4, 2, tzinfo=DbReportTest._TZ_00), 50.0, 2),
             pct_errors[1])
 
         # more than 74%

@@ -2,6 +2,7 @@
 
 import psycopg2
 
+
 class DbReportTestHelper:
     """Helper class for creating test data"""
 

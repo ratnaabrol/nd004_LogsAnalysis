@@ -6,7 +6,8 @@ class DbReport:
     """Reports on a database."""
 
     _POPULAR_AUTHORS_SQL = """
-    select authors.name as author_name, count(aae.derived_slug) as article_count
+    select authors.name as author_name,
+           count(aae.derived_slug) as article_count
       from accessed_articles_ext as aae
       right join authors on aae.author = authors.id
       group by authors.name
@@ -22,7 +23,9 @@ class DbReport:
     _DATES_WITH_PCT_ERRORS_SQL = """
     select * from (
       select date,
-             100 * count(case when status_nok = true then 1 else NULL end)::float/count(*) as nok_pct,
+            100 * count(case when status_nok = true
+                       then 1
+                       else NULL end)::float/count(*) as nok_pct,
              count (*) as count_all
           from log_ext group by date) as nok_table
       where nok_pct > %(nok_pct)s
@@ -56,7 +59,7 @@ class DbReport:
                 sql = DbReport._POPULAR_AUTHORS_SQL
                 if top_n is not None:
                     sql += DbReport._LIMIT_SQL
-                cursor.execute(sql, {"top_n":top_n})
+                cursor.execute(sql, {"top_n": top_n})
                 authors = cursor.fetchall()
 
         news_db.close()
@@ -91,12 +94,12 @@ class DbReport:
         response errors.
 
         Returns a list of tuples in order of most error prone. The tuples
-        in the list contain date, percentage of error requests on that date,
-        and total number of requests on that date.
+        in the list contain date (as datetime), percentage of error requests
+        on that date, and total number of requests on that date.
 
         Keyword arguments:
-        pct_errors -- the percentage that is our lower bound (exclusive).
-                      Required.
+        pct_errors -- the percentage of errors that is our lower bound
+                      (exclusive). Required.
         """
 
         dates = []

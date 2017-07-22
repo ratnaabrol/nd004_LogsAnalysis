@@ -91,8 +91,8 @@ class DbReport:
         response errors.
 
         Returns a list of tuples in order of most error prone. The tuples
-        in the list contain date, number of ok requests, number of not ok
-        requests and percentage of bad requests.
+        in the list contain date, percentage of error requests on that date,
+        and total number of requests on that date.
 
         Keyword arguments:
         pct_errors -- the percentage that is our lower bound (exclusive).

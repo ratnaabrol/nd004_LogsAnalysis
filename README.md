@@ -25,6 +25,7 @@ __Note__: the sql for the views is not explicitly listed in this README to ensur
 To allow the unit tests to run a test database must be created. From the project root:
 ```
 psql -f init/createTestDatabase.sql
+psql -d news_test -f init/createViews.sql
 ```
 
 ### Usage Prerequisites
@@ -74,7 +75,7 @@ To generate the default analysis output:
 $> logs_analysis
 ```
 
-When run within the VM for this course, the this will produce the following output:
+When run within the VM for this course, the above command will produce the following output:
 
 ```
 
@@ -141,11 +142,13 @@ $> pip3 uninstall logs-analysis
     * first release
 
 ## Appendix: Implementation notes
-The code has been structured as a project to be packaged and installed using setuptools. Whilst the code can be run directly from the project directory, it is recommended that a distribution is created and installed, as described in the sections above.
+The code has been structured as a project to be packaged and installed using setuptools. Whilst the code can be run directly from the project directory, it is recommended that a distribution is created and installed as described in the sections above.
 
 Database access uses the `psycopg2` library, and specifically the [context manager pattern provided by that library](http://initd.org/psycopg/docs/usage.html?highlight=context#with-statement). So, it takes advantage of transactional commit, rollback and resource management provided by using the python `with` statement.
 
 The project's `sql` directory provides the initial scripts that were used to create and test the sql for this solution to the project. This directory is for information only.
+
+The `log_ext` view (as created in `init/createViews.sql`) ensures that the timezone is included when extracting the date from the `log` table's time column. This is to avoid ambiguity as to when the log entry actually occurred.
 
 Database access code can be found in `src/logs_analysis/db_report.py`.
 
@@ -203,7 +206,7 @@ __Columns__:
     * text, optional.
 
 ### `log` table
-__Description__: Article access log, detailing (among other metadata) accessor IP address, resource accessed and date/time of access.
+__Description__: Article access log, detailing (as well as other metadata) accessor IP address, resource accessed and date/time of access.
 
 __Columns__:
 * __id__

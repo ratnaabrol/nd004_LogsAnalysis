@@ -51,6 +51,11 @@ class DbReport:
 
         Keyword arguments:
         top_n -- the number of authors to which to limit the returned list.
+        Optional. Defaults to None, which means unlimited.
+
+        Throws:
+        psycopg2.Error --  when an error occurs with accessing or querying the
+        database.
         """
         authors = []
 
@@ -75,6 +80,11 @@ class DbReport:
 
         Keyword arguments:
         top_n -- the number of articles to which to limit the returned list.
+        Optional. Defaults to None, which means unlimited.
+
+        Throws:
+        psycopg2.Error --  when an error occurs with accessing or querying the
+        database.
         """
         articles = []
 
@@ -100,6 +110,10 @@ class DbReport:
         Keyword arguments:
         pct_errors -- the percentage of errors that is our lower bound
                       (exclusive). Required.
+
+        Throws:
+        psycopg2.Error --  when an error occurs with accessing or querying the
+        database.
         """
 
         dates = []

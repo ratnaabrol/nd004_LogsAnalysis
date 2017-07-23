@@ -17,12 +17,16 @@ def test_suite():
 
 setup(
     name="logs_analysis",
-    version="0.0.1",
+    version="1.0.0",
     namespace_packages=["logs_analysis"],
+    python_requires='>=3',
     packages=find_packages("src"),
     package_dir={"": "src"},
-
     install_requires=["psycopg2==2.7.1"],
-
+    entry_points={
+        "console_scripts": [
+            "logs_analysis=logs_analysis:__main__.main"
+        ]
+    },
     test_suite="setup.test_suite"
 )
